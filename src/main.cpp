@@ -587,7 +587,6 @@ bool output_wts(struct whisper_context* ctx, const char* fname, const char* fnam
 
 int main(int argc, char** argv)
 {
-    fprintf(stdout, argv[0]);
     whisper_params params;
 
     if (whisper_params_parse(argc, argv, params) == false)
@@ -697,14 +696,14 @@ int main(int argc, char** argv)
             pcmf32.resize(n);
             if (wav.channels == 1)
             {
-                for (int i = 0; i < n; i++)
+                for (size_t i = 0; i < n; i++)
                 {
                     pcmf32[i] = float(pcm16[i]) / 32768.0f;
                 }
             }
             else
             {
-                for (int i = 0; i < n; i++)
+                for (size_t i = 0; i < n; i++)
                 {
                     pcmf32[i] = float(pcm16[2 * i] + pcm16[2 * i + 1]) / 65536.0f;
                 }
@@ -717,7 +716,7 @@ int main(int argc, char** argv)
 
                 pcmf32s[0].resize(n);
                 pcmf32s[1].resize(n);
-                for (int i = 0; i < n; i++)
+                for (size_t i = 0; i < n; i++)
                 {
                     pcmf32s[0][i] = float(pcm16[2 * i]) / 32768.0f;
                     pcmf32s[1][i] = float(pcm16[2 * i + 1]) / 32768.0f;
