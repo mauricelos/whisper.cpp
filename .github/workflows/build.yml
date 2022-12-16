@@ -1,6 +1,6 @@
 name: CI/CD Whisper
 
-on: [push]
+on: workflow_dispatch
 
 jobs:
   build_run_whisper:
@@ -17,6 +17,6 @@ jobs:
       - name: Use bazel
         run: python3 bazelisk/bazelisk.py --version
       - name: Build binaries
-        run: python bazelisk/bazelisk.py build --compilation_mode=opt --copt=-march=native :whisper
+        run: python3 bazelisk/bazelisk.py build --compilation_mode=opt --copt=-march=native :whisper
       - name: Run binaries
         run: bash deploy_whisper.sh && cd deployment && ./whisper -m ggml-tiny.en.bin -f samples_jfk.wav
