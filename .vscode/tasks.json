@@ -1,0 +1,96 @@
+{
+    "version": "2.0.0",
+    "windows": {
+        "options": {
+            "shell": {
+                "executable": "powershell.exe",
+            },
+            "env": {
+                "BAZEL_VC": "C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/VC"
+            }
+        }
+    },
+    "linux": {
+        "options": {
+            "shell": {
+                "executable": "/bin/sh",
+            }
+        }
+    },
+    "osx": {
+        "options": {
+            "shell": {
+                "executable": "/bin/zsh",
+            }
+        }
+    },
+    "tasks": [
+        {
+            "label": "get_latest_bazelisk",
+            "type": "shell",
+            "command": "git submodule update --init --recursive && git pull --recurse-submodules && git submodule update --recursive --remote",
+            "windows": {
+                "command": "git submodule update --init --recursive; git pull --recurse-submodules; git submodule update --recursive --remote"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+        },
+        {
+            "label": "clang_format",
+            "windows": {
+                "type": "shell",
+                "command": "Get-ChildItem .\\include\\*,.\\src\\*,.\\test\\*,.\\benchmark\\* -Include *.cpp,*.h -Recurs -File | Foreach {clang-format -style=file -i $_.fullname}"
+            },
+            "linux": {
+                "type": "shell",
+                "command": "find ./include/* ./src/* ./test/* ./benchmark/* -regex '.*\\.\\(cpp\\|h\\)' -exec clang-format -style=file -i {} \\;"
+            },
+            "osx": {
+                "type": "shell",
+                "command": "find ./include/* ./src/* ./test/* ./benchmark/* -type f -print | egrep -i '\\.h$|\\.cpp$' | xargs clang-format -i -style=file"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+        },
+        {
+            "label": "clean_all",
+            "type": "shell",
+            "command": "python bazelisk/bazelisk.py clean",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+        },
+        {
+            "label": "build_whisper",
+            "type": "shell",
+            "command": "python bazelisk/bazelisk.py build --compilation_mode=opt :whisper",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+        },
+        {
+            "label": "build_whisper_fast",
+            "type": "shell",
+            "command": "python bazelisk/bazelisk.py build :whisper",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+        },
+        {
+            "label": "run_whisper",
+            "type": "shell",
+            "command": "python bazelisk/bazelisk.py run --compilation_mode=opt :whisper",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+        },
+    ]
+}
