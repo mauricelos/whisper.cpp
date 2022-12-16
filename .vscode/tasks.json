@@ -3,7 +3,7 @@
     "windows": {
         "options": {
             "shell": {
-                "executable": "powershell.exe",
+                "executable": "powershell",
             },
             "env": {
                 "BAZEL_VC": "C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/VC"
@@ -41,15 +41,15 @@
             "label": "clang_format",
             "windows": {
                 "type": "shell",
-                "command": "Get-ChildItem .\\include\\*,.\\src\\*,.\\test\\*,.\\benchmark\\* -Include *.cpp,*.h -Recurs -File | Foreach {clang-format -style=file -i $_.fullname}"
+                "command": "Get-ChildItem .\\include\\*,.\\src\\* -Include *.cpp,*.h -Recurs -File | Foreach {clang-format -style=file -i $_.fullname}"
             },
             "linux": {
                 "type": "shell",
-                "command": "find ./include/* ./src/* ./test/* ./benchmark/* -regex '.*\\.\\(cpp\\|h\\)' -exec clang-format -style=file -i {} \\;"
+                "command": "find ./include/* ./src/* -regex '.*\\.\\(cpp\\|h\\)' -exec clang-format -style=file -i {} \\;"
             },
             "osx": {
                 "type": "shell",
-                "command": "find ./include/* ./src/* ./test/* ./benchmark/* -type f -print | egrep -i '\\.h$|\\.cpp$' | xargs clang-format -i -style=file"
+                "command": "find ./include/* ./src/* -type f -print | egrep -i '\\.h$|\\.cpp$' | xargs clang-format -i -style=file"
             },
             "group": {
                 "kind": "build",
@@ -67,17 +67,18 @@
         },
         {
             "label": "build_whisper",
-            "type": "shell",
-            "command": "python bazelisk/bazelisk.py build --compilation_mode=opt :whisper",
-            "group": {
-                "kind": "build",
-                "isDefault": true
+            "windows": {
+                "type": "shell",
+                "command": "python bazelisk/bazelisk.py build --compilation_mode=opt --copt=/arch:AVX2 :whisper",
             },
-        },
-        {
-            "label": "build_whisper_fast",
-            "type": "shell",
-            "command": "python bazelisk/bazelisk.py build :whisper",
+            "linux": {
+                "type": "shell",
+                "command": "python bazelisk/bazelisk.py build --compilation_mode=opt --copt=-march=native :whisper",
+            },
+            "osx": {
+                "type": "shell",
+                "command": "python bazelisk/bazelisk.py build --compilation_mode=opt --copt=-march=native :whisper",
+            },
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -85,8 +86,18 @@
         },
         {
             "label": "run_whisper",
-            "type": "shell",
-            "command": "python bazelisk/bazelisk.py run --compilation_mode=opt :whisper",
+            "windows": {
+                "type": "shell",
+                "command": "python bazelisk/bazelisk.py build --compilation_mode=opt --copt=/arch:AVX2 :whisper; ./deploy_whisper.bat; cd deployment; ./whisper.exe -m ggml-tiny.en.bin -f samples_jfk.wav",
+            },
+            "linux": {
+                "type": "shell",
+                "command": "python bazelisk/bazelisk.py build --compilation_mode=opt --copt=-march=native :whisper && bash deploy_whisper.sh && cd deployment && ./whisper -m ggml-tiny.en.bin -f samples_jfk.wav",
+            },
+            "osx": {
+                "type": "shell",
+                "command": "python bazelisk/bazelisk.py build --compilation_mode=opt --copt=-march=native :whisper && bash deploy_whisper.sh && cd deployment && ./whisper -m ggml-tiny.en.bin -f samples_jfk.wav",
+            },
             "group": {
                 "kind": "build",
                 "isDefault": true
