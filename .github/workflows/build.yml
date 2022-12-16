@@ -15,8 +15,8 @@ jobs:
         with:
           python-version: '3.x'
       - name: Use bazel
-        run: ./bazelisk/bazelisk.py --version
+        run: python3 bazelisk/bazelisk.py --version
       - name: Build binaries
-        run: python bazelisk/bazelisk.py build :whisper
+        run: python3 bazelisk/bazelisk.py build :whisper
       - name: Run binaries
         run: bash deploy_whisper.sh && cd deployment && ./whisper -m ggml-tiny.en.bin -f samples_jfk.wav
