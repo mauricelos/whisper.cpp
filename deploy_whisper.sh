@@ -1,6 +1,6 @@
 #!/bin/bash
 
-yes | rm -r -f deployment
+"yes || true" | rm -r -f deployment
 mkdir -p deployment/
 cp "$(python3 bazelisk/bazelisk.py info --compilation_mode=opt bazel-bin)/whisper" deployment/
 cp models/ggml-tiny.en.bin deployment/

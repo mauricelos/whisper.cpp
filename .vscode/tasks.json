@@ -88,15 +88,15 @@
             "label": "run_whisper",
             "windows": {
                 "type": "shell",
-                "command": "python bazelisk/bazelisk.py build --compilation_mode=opt --copt=/arch:AVX2 :whisper; ./deploy_whisper.bat; cd deployment; ./whisper.exe -m ggml-tiny.en.bin -f samples_jfk.wav",
+                "command": "python bazelisk/bazelisk.py build --compilation_mode=opt --copt=/arch:AVX2 :whisper; ./deploy_whisper.bat; cd deployment; ./whisper.exe -m ggml-tiny.en.bin -f samples_jfk.wav -t max",
             },
             "linux": {
                 "type": "shell",
-                "command": "python bazelisk/bazelisk.py build --compilation_mode=opt --copt=-march=native :whisper && bash deploy_whisper.sh && cd deployment && ./whisper -m ggml-tiny.en.bin -f samples_jfk.wav",
+                "command": "python bazelisk/bazelisk.py build --compilation_mode=opt --copt=-march=native :whisper && bash deploy_whisper.sh && cd deployment && ./whisper -m ggml-tiny.en.bin -f samples_jfk.wav -t max",
             },
             "osx": {
                 "type": "shell",
-                "command": "python bazelisk/bazelisk.py build --compilation_mode=opt --copt=-march=native :whisper && bash deploy_whisper.sh && cd deployment && ./whisper -m ggml-tiny.en.bin -f samples_jfk.wav",
+                "command": "python bazelisk/bazelisk.py build --compilation_mode=opt --copt=-march=native :whisper && bash deploy_whisper.sh && cd deployment && ./whisper -m ggml-tiny.en.bin -f samples_jfk.wav -t max",
             },
             "group": {
                 "kind": "build",

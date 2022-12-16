@@ -106,7 +106,7 @@ bool whisper_params_parse(int argc, char** argv, whisper_params& params)
         }
         else if (arg == "-t" || arg == "--threads")
         {
-            params.n_threads = std::stoi(argv[++i]);
+            params.n_threads = strcmp(argv[++i], "max") == 0 ? std::thread::hardware_concurrency() : std::stoi(argv[i]);
         }
         else if (arg == "-p" || arg == "--processors")
         {
@@ -508,7 +508,6 @@ bool output_wts(struct whisper_context* ctx, const char* fname, const char* fnam
             txt_ul = "\\ \\ ";
 
             {
-                int ncnt = 0;
                 for (int k = 0; k < n; ++k)
                 {
                     const auto& token2 = tokens[k];
@@ -539,8 +538,6 @@ bool output_wts(struct whisper_context* ctx, const char* fname, const char* fnam
                             txt_ul += "\\ ";
                         }
                     }
-
-                    ncnt += txt.size();
                 }
 
                 ::replace_all(txt_bg, "'", "\u2019");
