@@ -6,6 +6,11 @@ cc_library(
         "include/whisper.h",
         "include/ggml.h"
     ],
+    copts = [
+        '-fpic',
+        '-pthread'
+    ],
+    linkopts = ["-lpthread"],
     includes = ["include"],
     srcs = ["src/whisper.cpp", "src/ggml.c"],
     strip_include_prefix = "include",
